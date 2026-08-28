@@ -1,4 +1,4 @@
-import Image from "next/image";
+import ClickableImage from "@/components/ClickableImage";
 
 type Photo = {
   id: string;
@@ -19,12 +19,10 @@ export default function PhotoGallery({ photos }: { photos: Photo[] }) {
           className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
         >
           <div className="relative aspect-square w-full">
-            <Image
+            <ClickableImage
               src={photo.photo_url}
               alt={photo.caption ?? ""}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 50vw, 25vw"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
           {photo.caption && (
