@@ -131,29 +131,44 @@ alter table pages enable row level security;
 alter table page_photos enable row level security;
 
 -- Lecture publique
+drop policy if exists "public read site_settings" on site_settings;
 create policy "public read site_settings" on site_settings for select using (true);
+drop policy if exists "public read teams" on teams;
 create policy "public read teams" on teams for select using (true);
+drop policy if exists "public read matches" on matches;
 create policy "public read matches" on matches for select using (true);
+drop policy if exists "public read competitions" on competitions;
 create policy "public read competitions" on competitions for select using (true);
+drop policy if exists "public read competition_photos" on competition_photos;
 create policy "public read competition_photos" on competition_photos for select using (true);
+drop policy if exists "public read published pages" on pages;
 create policy "public read published pages" on pages for select using (is_published = true);
+drop policy if exists "public read page_photos" on page_photos;
 create policy "public read page_photos" on page_photos for select using (true);
 
 -- Écriture réservée aux utilisateurs connectés (l'admin)
+drop policy if exists "admin write site_settings" on site_settings;
 create policy "admin write site_settings" on site_settings for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin write teams" on teams;
 create policy "admin write teams" on teams for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin write matches" on matches;
 create policy "admin write matches" on matches for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin write competitions" on competitions;
 create policy "admin write competitions" on competitions for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin write competition_photos" on competition_photos;
 create policy "admin write competition_photos" on competition_photos for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin write pages" on pages;
 create policy "admin write pages" on pages for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
+drop policy if exists "admin all read pages" on pages;
 create policy "admin all read pages" on pages for select
   using (auth.role() = 'authenticated');
+drop policy if exists "admin write page_photos" on page_photos;
 create policy "admin write page_photos" on page_photos for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
@@ -166,15 +181,19 @@ insert into storage.buckets (id, name, public)
 values ('club-photos', 'club-photos', true)
 on conflict (id) do nothing;
 
+drop policy if exists "public read club-photos" on storage.objects;
 create policy "public read club-photos" on storage.objects
   for select using (bucket_id = 'club-photos');
 
+drop policy if exists "admin upload club-photos" on storage.objects;
 create policy "admin upload club-photos" on storage.objects
   for insert with check (bucket_id = 'club-photos' and auth.role() = 'authenticated');
 
+drop policy if exists "admin update club-photos" on storage.objects;
 create policy "admin update club-photos" on storage.objects
   for update using (bucket_id = 'club-photos' and auth.role() = 'authenticated');
 
+drop policy if exists "admin delete club-photos" on storage.objects;
 create policy "admin delete club-photos" on storage.objects
   for delete using (bucket_id = 'club-photos' and auth.role() = 'authenticated');
 

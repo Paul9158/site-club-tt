@@ -3,9 +3,16 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
-import type { Block, BlockOwnerType } from "@/lib/types";
+import type { Block, BlockOwnerType, BlockWidth } from "@/lib/types";
 import { renderMarkdown } from "@/lib/markdown";
 import PhotoUploader from "@/components/PhotoUploader";
+
+const WIDTH_OPTIONS: { value: BlockWidth; label: string }[] = [
+  { value: "full", label: "Pleine largeur" },
+  { value: "two_thirds", label: "Deux tiers" },
+  { value: "half", label: "Moitié" },
+  { value: "third", label: "Tiers" },
+];
 
 export default function BlockEditor({
   ownerType,
@@ -69,6 +76,11 @@ export default function BlockEditor({
     await supabase.from("blocks").update(patch).eq("id", id);
   }
 
+  async function updateWidth(id: string, width: BlockWidth) {
+    updateLocal(id, { width });
+    await supabase.from("blocks").update({ width }).eq("id", id);
+  }
+
   function updateLocal(id: string, patch: Partial<Block>) {
     setBlocks((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
   }
@@ -108,6 +120,11 @@ export default function BlockEditor({
           onUploaded={addPhotoBlock}
         />
       </div>
+      <p className="mt-2 text-xs text-slate-400">
+        Astuce : choisis &quot;Moitié&quot; ou &quot;Tiers&quot; sur plusieurs
+        blocs qui se suivent pour les afficher côte à côte, comme une grille
+        de journal.
+      </p>
 
       <div className="mt-4 flex flex-col gap-3">
         {blocks.length === 0 && (
@@ -121,10 +138,24 @@ export default function BlockEditor({
             key={block.id}
             className="rounded-xl border border-slate-200 bg-white p-3"
           >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                {block.block_type === "text" ? "Texte" : "Photo"}
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  {block.block_type === "text" ? "Texte" : "Photo"}
+                </span>
+                <select
+                  value={block.width}
+                  onChange={(e) => updateWidth(block.id, e.target.value as BlockWidth)}
+                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-600"
+                  title="Largeur du bloc"
+                >
+                  {WIDTH_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="flex gap-1">
                 <button
                   onClick={() => moveBlock(index, -1)}

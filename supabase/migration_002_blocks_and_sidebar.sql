@@ -35,7 +35,10 @@ create index if not exists blocks_owner_idx on blocks(owner_type, page_id, posit
 
 alter table blocks enable row level security;
 
+drop policy if exists "public read blocks" on blocks;
 create policy "public read blocks" on blocks for select using (true);
+
+drop policy if exists "admin write blocks" on blocks;
 create policy "admin write blocks" on blocks for all
   using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 
@@ -51,8 +54,12 @@ where content is not null and trim(content) <> ''
   and not exists (select 1 from blocks b where b.page_id = pages.id);
 
 insert into blocks (owner_type, page_id, block_type, photo_url, caption, position)
-select 'page', page_id, 'photo', photo_url, caption, display_order + 1
-from page_photos;
+select 'page', pp.page_id, 'photo', pp.photo_url, pp.caption, pp.display_order + 1
+from page_photos pp
+where not exists (
+  select 1 from blocks b
+  where b.page_id = pp.page_id and b.photo_url = pp.photo_url
+);
 
 -- ----------------------------------------------------------------------------
 -- 3. Réglages supplémentaires : afficher/masquer les sections automatiques

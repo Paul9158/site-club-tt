@@ -126,9 +126,12 @@ sans toucher au code :
 - **Pages / Onglets** : créer de nouveaux onglets pour le menu du site
   (ex: "Le Club", "Horaires d'entraînement", "Partenaires"...). Chaque
   page se construit avec des blocs de texte et de photo, dans l'ordre de
-  ton choix (flèches ↑ ↓ pour réorganiser). Tu peux aussi réordonner les
-  onglets eux-mêmes dans le menu du site, et choisir s'ils sont affichés
-  dans le menu et/ou publiés.
+  ton choix (flèches ↑ ↓ pour réorganiser). Chaque bloc a aussi un réglage
+  **Largeur** (Pleine largeur / Deux tiers / Moitié / Tiers) : mets deux
+  blocs en "Moitié" à la suite pour les afficher côte à côte, comme une
+  grille de journal. Tu peux aussi réordonner les onglets eux-mêmes dans
+  le menu du site, et choisir s'ils sont affichés dans le menu et/ou
+  publiés.
 - **Réglages du site** : nom du club, logo, couleurs du site, texte de
   présentation, adresse, contact, réseaux sociaux, et le **bandeau
   vertical fixe à gauche** (image + texte + lien, visible sur toutes les
@@ -164,6 +167,8 @@ Si je te renvoie un nouveau zip du projet (nouvelle fonctionnalité, correctif..
 - `supabase/migration_002_blocks_and_sidebar.sql` — ajoute les blocs de
   contenu (texte/photo réordonnables), les réglages de l'accueil et le
   bandeau vertical.
+- `supabase/migration_003_block_width.sql` — ajoute le réglage de largeur
+  par bloc (grille façon journal).
 - `src/app/(site)/` — les pages publiques du site (accueil, matchs,
   compétitions, pages personnalisées).
 - `src/app/admin/` — l'espace d'administration protégé par mot de passe.

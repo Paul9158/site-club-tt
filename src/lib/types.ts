@@ -83,6 +83,7 @@ export type PagePhoto = {
 
 export type BlockType = "text" | "photo";
 export type BlockOwnerType = "home" | "page";
+export type BlockWidth = "full" | "two_thirds" | "half" | "third";
 
 export type Block = {
   id: string;
@@ -93,4 +94,5 @@ export type Block = {
   photo_url: string | null;
   caption: string | null;
   position: number;
+  width: BlockWidth;
 };
